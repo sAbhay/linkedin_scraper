@@ -95,8 +95,8 @@ class Person(Scraper):
             _ = WebDriverWait(self.driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
                 EC.presence_of_element_located((By.CLASS_NAME, class_name))
             )
-            div = self.driver.find_element_by_class_name(class_name)
-            div.find_element_by_tag_name("button").click()
+            div = self.driver.findElement(By.cssSelector('.'+class_name))
+            div.findElement(By.tagName("button")).click()
         except Exception as e:
             pass
 
@@ -113,7 +113,7 @@ class Person(Scraper):
             )
         )
 
-        self.name = root.find_element_by_class_name(selectors.NAME).text.strip()
+        self.name = root.findElement(By.cssSelector('.'+selectors.NAME)).text.strip()
 
         # get about
         try:
@@ -156,31 +156,31 @@ class Person(Scraper):
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
                 EC.presence_of_element_located((By.ID, "experience-section"))
             )
-            exp = driver.find_element_by_id("experience-section")
+            exp = driver.findElement(By.cssSelector("#experience-section"))
         except:
             exp = None
 
         if exp is not None:
-            for position in exp.find_elements_by_class_name("pv-position-entity"):
-                position_title = position.find_element_by_tag_name("h3").text.strip()
+            for position in exp.findElements(By.cssSelector(".pv-position-entity")):
+                position_title = position.findElement(By.tagName("h3")).text.strip()
 
                 try:
-                    company = position.find_elements_by_tag_name("p")[1].text.strip()
+                    company = position.findElements(By.tagName("p"))[1].text.strip()
                     times = str(
-                        position.find_elements_by_tag_name("h4")[0]
-                        .find_elements_by_tag_name("span")[1]
+                        position.findElements(By.tagName("h4"))[0]
+                        .findElements(By.tagName("span"))[1]
                         .text.strip()
                     )
                     from_date = " ".join(times.split(" ")[:2])
                     to_date = " ".join(times.split(" ")[3:])
                     duration = (
-                        position.find_elements_by_tag_name("h4")[1]
-                        .find_elements_by_tag_name("span")[1]
+                        position.findElements(By.tagName("h4"))[1]
+                        .findElements(By.tagName("span"))[1]
                         .text.strip()
                     )
                     location = (
-                        position.find_elements_by_tag_name("h4")[2]
-                        .find_elements_by_tag_name("span")[1]
+                        position.findElements(By.tagName("h4"))[2]
+                        .findElements(By.tagName("span"))[1]
                         .text.strip()
                     )
                 except:
@@ -198,8 +198,8 @@ class Person(Scraper):
                 self.add_experience(experience)
 
         # get location
-        location = driver.find_element_by_class_name(f"{self.__TOP_CARD}--list-bullet")
-        location = location.find_element_by_tag_name("li").text
+        location = driver.findElement(By.cssSelector(f".{self.__TOP_CARD}--list-bullet"))
+        location = location.findElement(By.tagName("li")).text
         self.add_location(location)
 
         driver.execute_script(
@@ -213,26 +213,26 @@ class Person(Scraper):
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
                 EC.presence_of_element_located((By.ID, "education-section"))
             )
-            edu = driver.find_element_by_id("education-section")
+            edu = driver.findElement(By.cssSelector("#education-section"))
         except:
             edu = None
         if edu:
-            for school in edu.find_elements_by_class_name(
-                "pv-profile-section__list-item"
-            ):
-                university = school.find_element_by_class_name(
-                    "pv-entity__school-name"
-                ).text.strip()
+            for school in edu.findElements(By.cssSelector(
+                ".pv-profile-section__list-item"
+            )):
+                university = school.findElement(By.cssSelector(
+                    ".pv-entity__school-name"
+                )).text.strip()
 
                 try:
                     degree = (
-                        school.find_element_by_class_name("pv-entity__degree-name")
-                        .find_elements_by_tag_name("span")[1]
+                        school.findElement(By.cssSelector("pv-entity__degree-name"))
+                        .findElements(By.tagName("span"))[1]
                         .text.strip()
                     )
                     times = (
-                        school.find_element_by_class_name("pv-entity__dates")
-                        .find_elements_by_tag_name("span")[1]
+                        school.findElement(By.cssSelector(".pv-entity__dates"))
+                        .findElements(By.tagName("span"))[1]
                         .text.strip()
                     )
                     from_date, to_date = (times.split(" ")[0], times.split(" ")[2])
@@ -256,14 +256,14 @@ class Person(Scraper):
                     )
                 )
             )
-            interestContainer = driver.find_element_by_xpath(
+            interestContainer = driver.findElement(By.xpath(
                 "//*[@class='pv-profile-section pv-interests-section artdeco-container-card artdeco-card ember-view']"
-            )
-            for interestElement in interestContainer.find_elements_by_xpath(
+            ))
+            for interestElement in interestContainer.findElements(By.xpath(
                 "//*[@class='pv-interest-entity pv-profile-section__card-item ember-view']"
-            ):
+            )):
                 interest = Interest(
-                    interestElement.find_element_by_tag_name("h3").text.strip()
+                    interestElement.findElement(By.tagName("h3")).text.strip()
                 )
                 self.add_interest(interest)
         except:
@@ -279,16 +279,16 @@ class Person(Scraper):
                     )
                 )
             )
-            acc = driver.find_element_by_xpath(
+            acc = driver.findElement(By.xpath(
                 "//*[@class='pv-profile-section pv-accomplishments-section artdeco-container-card artdeco-card ember-view']"
-            )
-            for block in acc.find_elements_by_xpath(
+            ))
+            for block in acc.findElements(By.xpath(
                 "//div[@class='pv-accomplishments-block__content break-words']"
-            ):
-                category = block.find_element_by_tag_name("h3")
-                for title in block.find_element_by_tag_name(
+            )):
+                category = block.findElement(By.tagName("h3"))
+                for title in block.findElement(By.tagName(
                     "ul"
-                ).find_elements_by_tag_name("li"):
+                )).findElements(By.tagName("li")):
                     accomplishment = Accomplishment(category.text, title.text)
                     self.add_accomplishment(accomplishment)
         except:
@@ -300,13 +300,13 @@ class Person(Scraper):
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "mn-connections"))
             )
-            connections = driver.find_element_by_class_name("mn-connections")
+            connections = driver.findElement(By.cssSelector(".mn-connections"))
             if connections is not None:
-                for conn in connections.find_elements_by_class_name("mn-connection-card"):
-                    anchor = conn.find_element_by_class_name("mn-connection-card__link")
+                for conn in connections.findElements(By.cssSelector(".mn-connection-card")):
+                    anchor = conn.findElement(By.cssSelector(".mn-connection-card__link"))
                     url = anchor.get_attribute("href")
-                    name = conn.find_element_by_class_name("mn-connection-card__details").find_element_by_class_name("mn-connection-card__name").text.strip()
-                    occupation = conn.find_element_by_class_name("mn-connection-card__details").find_element_by_class_name("mn-connection-card__occupation").text.strip()
+                    name = conn.findElement(By.cssSelector(".mn-connection-card__details")).findElement(By.cssSelector(".mn-connection-card__name")).text.strip()
+                    occupation = conn.findElement(By.cssSelector(".mn-connection-card__details")).findElement(By.cssSelector(".mn-connection-card__occupation")).text.strip()
 
                     contact = Contact(name=name, occupation=occupation, url=url)
                     self.add_contact(contact)
@@ -324,49 +324,49 @@ class Person(Scraper):
             retry_times = retry_times + 1
 
         # get name
-        self.name = driver.find_element_by_class_name(
-            "top-card-layout__title"
-        ).text.strip()
+        self.name = driver.findElement(By.cssSelector(
+            ".top-card-layout__title"
+        )).text.strip()
 
         # get experience
         try:
             _ = WebDriverWait(driver, self.__WAIT_FOR_ELEMENT_TIMEOUT).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "experience"))
             )
-            exp = driver.find_element_by_class_name("experience")
+            exp = driver.findElement(By.cssSelector(".experience"))
         except:
             exp = None
 
         if exp is not None:
-            for position in exp.find_elements_by_class_name(
-                "experience-item__contents"
-            ):
-                position_title = position.find_element_by_class_name(
-                    "experience-item__title"
-                ).text.strip()
-                company = position.find_element_by_class_name(
-                    "experience-item__subtitle"
-                ).text.strip()
+            for position in exp.findElements(By.cssSelector(
+                ".experience-item__contents"
+            )):
+                position_title = position.findElement(By.cssSelector(
+                    ".experience-item__title"
+                )).text.strip()
+                company = position.findElement(By.cssSelector(
+                    ".experience-item__subtitle"
+                )).text.strip()
 
                 try:
-                    times = position.find_element_by_class_name(
-                        "experience-item__duration"
-                    )
-                    from_date = times.find_element_by_class_name(
-                        "date-range__start-date"
-                    ).text.strip()
+                    times = position.findElement(By.cssSelector(
+                        ".experience-item__duration"
+                    ))
+                    from_date = times.findElement(By.cssSelector(
+                        ".date-range__start-date"
+                    )).text.strip()
                     try:
-                        to_date = times.find_element_by_class_name(
-                            "date-range__end-date"
-                        ).text.strip()
+                        to_date = times.findElement(By.cssSelector(
+                            ".date-range__end-date"
+                        )).text.strip()
                     except:
                         to_date = "Present"
-                    duration = position.find_element_by_class_name(
-                        "date-range__duration"
-                    ).text.strip()
-                    location = position.find_element_by_class_name(
-                        "experience-item__location"
-                    ).text.strip()
+                    duration = position.findElement(By.cssSelector(
+                        ".date-range__duration"
+                    )).text.strip()
+                    location = position.findElement(By.cssSelector(
+                        ".experience-item__location"
+                    )).text.strip()
                 except:
                     from_date, to_date, duration, location = (None, None, None, None)
 
@@ -384,22 +384,22 @@ class Person(Scraper):
         )
 
         # get education
-        edu = driver.find_element_by_class_name("education__list")
-        for school in edu.find_elements_by_class_name("result-card"):
-            university = school.find_element_by_class_name(
-                "result-card__title"
-            ).text.strip()
-            degree = school.find_element_by_class_name(
-                "education__item--degree-info"
-            ).text.strip()
+        edu = driver.findElement(By.cssSelector(".education__list"))
+        for school in edu.findElements(By.cssSelector(".result-card")):
+            university = school.findElement(By.cssSelector(
+                ".result-card__title"
+            )).text.strip()
+            degree = school.findElement(By.cssSelector(
+                ".education__item--degree-info"
+            )).text.strip()
             try:
-                times = school.find_element_by_class_name("date-range")
-                from_date = times.find_element_by_class_name(
-                    "date-range__start-date"
-                ).text.strip()
-                to_date = times.find_element_by_class_name(
-                    "date-range__end-date"
-                ).text.strip()
+                times = school.findElement(By.cssSelector(".date-range"))
+                from_date = times.findElement(By.cssSelector(
+                    ".date-range__start-date"
+                )).text.strip()
+                to_date = times.findElement(By.cssSelector(
+                    ".date-range__end-date"
+                )).text.strip()
             except:
                 from_date, to_date = (None, None)
             education = Education(from_date=from_date, to_date=to_date, degree=degree)
